@@ -1,0 +1,37 @@
+package ascenseur.affichage ;
+
+import ascenseur.traitement.*;
+
+import java.util.ArrayList;
+
+public class VueRequetes implements  Observateur{
+	
+	ArrayList<RequeteExterne> listeRequetesExternes = new ArrayList<>();
+	ArrayList<RequeteInterne> listeRequetesInternes = new ArrayList<>();
+
+	public VueRequetes(ArrayList<RequeteExterne> listeRequetesExternes, ArrayList<RequeteInterne> listeRequetesInternes) {
+		this.listeRequetesExternes = listeRequetesExternes;
+		this.listeRequetesInternes = listeRequetesInternes;
+	}
+
+	// Affiche la liste des Requetes, le contenu de la boucle else pourrait bien aussi �tre le toString de Requete
+	public void afficher () {
+
+
+		/*if (listeRequetes.size() == 0) {
+			System.out.println("Aucune Requete.");
+		}
+		else {
+			System.out.println("Requetes en attente :");
+			int numRequete = 0 ;
+			for (Requete rq : listeRequetes) {
+				System.out.println("N " + numRequete + " vers " + rq.getEtage() + " etage.");
+			}
+		}*/
+	}
+
+	@Override
+	public void actualiser(ControleurAbstrait controleurAbstrait) {
+		this.listeRequetesExternes = controleurAbstrait.getListerequetesExternes();
+	}
+}

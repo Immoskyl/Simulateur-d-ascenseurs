@@ -1,0 +1,73 @@
+package ascenseur.affichage ;
+
+import ascenseur.traitement.AscenseurAbstrait;
+import ascenseur.utils.Constantes ;
+
+import java.util.ArrayList;
+
+public class VueCoupeImmeuble {
+	
+	private ArrayList<AscenseurAbstrait> listeAscenseurs;
+	private int nbEtages ;
+	
+	public VueCoupeImmeuble(ArrayList<AscenseurAbstrait> listeAscenseurs, int nbEtages) {
+		this.listeAscenseurs = listeAscenseurs;
+		this.nbEtages = nbEtages ;
+	}
+	
+	private void afficheLegende() {
+		System.out.println("U = mouvement haut, D = mouvement bas,  O = immobile ouvert, C = immobile ferme");
+	}
+
+	private void afficheToit() {
+		System.out.println(" Otiste");
+		afficheLegende();
+		System.out.print(Constantes.ICONE_TOIT);
+		for (int i = 0 ; i < listeAscenseurs.size() * Constantes.VALEUR_LARGEUR_IMMEUBLE ; ++i ) {
+			System.out.print(Constantes.ICONE_TOIT);
+		}
+		System.out.println(Constantes.CASE_VIDE);
+	}
+	
+	private void afficheUnEtage(int numEtage) {
+		System.out.print(Constantes.ICONE_BORD_IMMEUBLE);
+		System.out.print(Constantes.CASE_VIDE);
+		for (AscenseurAbstrait a : listeAscenseurs) {
+			if (a.getEtage() == numEtage) {
+				if (a.getEtat().getValeur() == Constantes.ValeurEtats.IMMOBILE_FERME) {
+					System.out.print(Constantes.ICONE_PORTES_FERMES);
+				}
+				else if (a.getEtat().getValeur() == Constantes.ValeurEtats.IMMOBILE_OUVERT) {
+					System.out.print(Constantes.ICONE_PORTES_OUVERTES);
+				}
+				else if (a.getEtat().getValeur() == Constantes.ValeurEtats.MOUVEMENT_HAUT) {
+					System.out.print(Constantes.ICONE_MOUVEMENT_MONTER);
+				}
+				else if (a.getEtat().getValeur() == Constantes.ValeurEtats.MOUVEMENT_BAS) {
+					System.out.print(Constantes.ICONE_MOUVEMENT_DESCENDRE);
+				}
+				else {
+					System.out.print(Constantes.ICONE_ERREUR); // Si un ascenceur a X c'est une erreur pas bien
+				}
+			}
+			else {
+				System.out.print(Constantes.ICONE_RAIL_ASCENSEUR);
+			}
+			System.out.print(Constantes.CASE_VIDE);
+			System.out.print(Constantes.ICONE_BORD_IMMEUBLE);
+			System.out.print(Constantes.CASE_VIDE);
+		}
+	}
+	
+	private void afficheCorp() {
+		for (int i = nbEtages ; i >= 0 ; --i ) {
+			afficheUnEtage(i) ;
+			System.out.println(Constantes.CASE_VIDE);
+		}
+	}
+	
+	public void afficher () {
+		afficheToit();
+		afficheCorp();
+	}
+}

@@ -1,0 +1,29 @@
+import java.util.Scanner;
+
+public class VueInteractive {
+
+	public static void main(String[] arg0) {
+		Scanner s = new Scanner(System.in); // Lecture de valeurs
+		
+		// Variables non donn�es membres parce que c'est pas s�mantique dans la classe de test
+		int nbEtagesImmeuble = 0 ;	
+		int nbAssenceurs = 0 ;
+		
+		
+		System.out.println("Test du fonctionnement d'assenceurs �tiste");
+		// Test cancer pour �viter la surcharge de m�moire (lolilol), aucune id�e de comment on fait les v�rifications & throw en java
+		while (nbEtagesImmeuble <= 1 || nbEtagesImmeuble >= 1000) { // ToDo Changer 1 et 1000 en constantes dans le fichier, nbEtageMin et Max !
+			System.out.println("Combien d'etages voulez vous ?");
+			nbEtagesImmeuble = s.nextInt() ;
+		}
+		while (nbAssenceurs <= 1 || nbAssenceurs >=1000) { // ToDo pareil
+			System.out.println("Combien d'ascenceurs voulez vous ?");
+			nbAssenceurs = s.nextInt() ;
+		}
+		
+		for (int i = 0 ; i < nbAssenceurs ; ++i ) {
+			// Cr�ation du assenceurs, difficile a faire sans le diagramme sous les yeux
+		}
+		
+	}
+}

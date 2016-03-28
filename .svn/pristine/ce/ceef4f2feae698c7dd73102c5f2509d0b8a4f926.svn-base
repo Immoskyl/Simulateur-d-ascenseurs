@@ -1,0 +1,12 @@
+package ascenseur.traitement;
+
+public interface ControleurAbstrait {
+
+    void creerRequeteExterne (int etage, boolean direction);
+
+    void choisirAscenseur (RequeteExterne requete);
+
+    void ajouterAscenseur(AscenseurAbstrait ascenseur);
+
+    void affecterRequetes ();
+}

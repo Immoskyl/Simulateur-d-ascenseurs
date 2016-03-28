@@ -1,0 +1,71 @@
+package ascenseur.traitement;
+
+import ascenseur.traitement.etat.Etat;
+
+import java.util.List;
+
+public abstract class Option implements AscenseurAbstrait {
+
+    protected AscenseurAbstrait delegue;
+
+    /**
+     * Méthode décorée par les options
+     * Affiche un message simple à chaque action en fonction de l'option
+     */
+    public abstract void action() ;
+
+    @Override
+    public void ajouterRequete(RequeteExterne requete) {
+        delegue.ajouterRequete(requete);
+    }
+
+    @Override
+    public void creerRequeteInterne(int etage) {
+        delegue.creerRequeteInterne(etage);
+    }
+
+    @Override
+    public Requete obtenirRequeteATraiter() {
+        return delegue.obtenirRequeteATraiter() ;
+    }
+
+    @Override
+    public Etat getEtat() {
+        return delegue.getEtat() ;
+    }
+
+    @Override
+    public int getEtage() {
+        return delegue.getEtage() ;
+    }
+
+    @Override
+    public boolean estBloque() {
+        return false;
+    }
+
+    @Override
+    public void bloquer() {
+        delegue.bloquer();
+    }
+
+    @Override
+    public void debloquer() {
+        delegue.debloquer();
+    }
+
+    @Override
+    public int getNombreRequetes() {
+        return delegue.getNombreRequetes();
+    }
+
+    @Override
+    public List<RequeteInterne> getRequetesInternes() {
+        return delegue.getRequetesInternes();
+    }
+
+    @Override
+    public List<RequeteExterne> getRequetesExternes() {
+        return delegue.getRequetesExternes();
+    }
+}

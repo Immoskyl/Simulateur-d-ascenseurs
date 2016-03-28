@@ -1,0 +1,125 @@
+package ascenseur.traitement;
+
+import ascenseur.traitement.etat.ImmobileFerme;
+import ascenseur.traitement.etat.ImmobileOuvert;
+import ascenseur.traitement.etat.MouvementBas;
+import ascenseur.traitement.etat.MouvementHaut;
+
+import java.util.ArrayList;
+
+public class Controleur {
+    private ArrayList<RequeteExterne> listerequetesExternes;
+    private ArrayList<AscenseurAbstrait> listeAscenseurs;
+
+    //              -----SINGLETON-----
+
+    // L'utilisation du mot clé volatile, en Java version 5 et supérieur,
+    // permet d'éviter le cas où "Controleur.instance" est non-nul,
+    // mais pas encore "réellement" instancié.
+    private static volatile Controleur instance = null;
+
+    /**
+     * Constructeur de l'objet.
+     */
+    private Controleur() {
+        // La présence d'un constructeur privé supprime le constructeur public par défaut.
+        // De plus, seul le Controleur peut s'instancier lui-même.
+        super();
+    } //Controleur()
+
+    /**
+     * Méthode permettant de renvoyer une instance de la classe Controleur
+     * @return Retourne l'instance du Controleur.
+     */
+    public final static Controleur getInstance() {
+        //Le "Controleur doublement vérifié" permet
+        //d'éviter un appel coûteux à synchronized,
+        //une fois que l'instanciation est faite.
+        if (Controleur.instance == null) {
+            // Le mot-clé synchronized sur ce bloc empêche toute instanciation
+            // multiple même par différents "threads".
+            // Il est TRES important.
+            synchronized(Controleur.class) {
+                if (Controleur.instance == null) {
+                    Controleur.instance = new Controleur();
+                }
+            }
+        }
+        return Controleur.instance;
+    }//Controleur()
+
+    //              -----SINGLETON-----
+
+
+    public void creerRequeteExterne (int etage, boolean direction) {
+        RequeteExterne requete = new RequeteExterne(etage, direction);
+        listerequetesExternes.add(requete);
+    }
+
+    public void choisirAscenseur (RequeteExterne requete) {
+        //the random way
+        int i = (int) (Math.random() * listeAscenseurs.size());
+        listeAscenseurs.get(i).ajouterRequete(requete);
+    }
+
+    private Integer getMinValueOf  (ArrayList<Integer> inputArray) {
+            Integer minValue = inputArray.get(0);
+            for(Integer i=1;i<inputArray.size();i++){
+                if(inputArray.get(i) < minValue){
+                    minValue = inputArray.get(i);
+                }
+            }
+            return minValue;
+    }
+
+    private void ajouterRequeteAscenseur (ArrayList<Integer> velocite, Requete requete) {
+        listeAscenseurs.get(velocite.indexOf(getMinValueOf(velocite)) + 1).ajouterRequete(requete);
+
+    }
+
+    private void test (RequeteExterne requete) {
+        ArrayList<Integer> velocite = new ArrayList<>();
+
+        //Calcul de la velocite des ascenseurs dans le bon sens
+        for (AscenseurAbstrait ascenseur: listeAscenseurs) {
+            if (!ascenseur.estBloque()) {
+                if (((ascenseur.getEtage() > requete.getEtage()
+                        && ascenseur.getEtat() == MouvementBas.getInstance()))
+                        || (ascenseur.getEtage() < requete.getEtage()
+                        && ascenseur.getEtat() == MouvementHaut.getInstance()))
+                    velocite.add(ascenseur.getEtage() - requete.getEtage());
+                else
+                    velocite.add(0);
+            }
+            //Determination de l'ascenceur ayant la meilleure velocite
+            if (velocite.size() != 0) {
+                ajouterRequeteAscenseur (velocite, requete);
+            }
+        }
+        //Calcul de la velocite des ascenseurs arretes
+        for (AscenseurAbstrait ascenseur: listeAscenseurs) {
+            if (! ascenseur.estBloque())
+                if (ascenseur.getEtat() == ImmobileFerme.getInstance())
+                    velocite.add(ascenseur.getEtage() - requete.getEtage());
+                else if (ascenseur.getEtat() == ImmobileOuvert.getInstance())
+                    velocite.add(ascenseur.getEtage() - requete.getEtage() + 1);
+                else
+                    velocite.add(0);
+            //Determination de l'ascenceur ayant la meilleure velocite
+            if (velocite.size() != 0) {
+                ajouterRequeteAscenseur (velocite, requete);
+            }
+
+        }
+        //Calcul de la velocite des ascenseurs dans le mauvais sens
+        for (AscenseurAbstrait ascenseur: listeAscenseurs) {
+            if (!ascenseur.estBloque())
+            // TODO    velocite.add(ascenseur.getEtage() - requete.getEtage());
+            //Determination de l'ascenceur ayant la meilleure velocite
+            if (velocite.size() != 0) {
+            // TODO    ajouterRequeteAscenseur (velocite, requete);
+            }
+        }
+    }
+}
+

@@ -1,0 +1,29 @@
+package ascenseur.affichage ;
+
+import ascenseur.traitement.Requete;
+
+import java.util.ArrayList;
+
+public class VueRequetes {
+	
+	ArrayList<Requete> listeRequetes = new ArrayList<Requete>() ;
+	
+	public VueRequetes(ArrayList<Requete> listeRequetes) {
+		this.listeRequetes = listeRequetes ;
+	}
+	
+	// Affiche la liste des Requetes, le contenu de la boucle else pourrait bien aussi �tre le toString de Requete
+	public void afficher () {
+		if (listeRequetes.size() == 0) {
+			System.out.println("Aucune Requete.");
+		}
+		else {
+			System.out.println("Requetes en attente :");
+			int numRequete = 0 ;
+			for (Requete rq : listeRequetes) {
+				System.out.println("N " + numRequete + " vers " + rq.getEtage() + " etage.");
+			}
+		}
+	}
+
+}

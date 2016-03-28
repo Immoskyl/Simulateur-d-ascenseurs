@@ -1,0 +1,167 @@
+package ascenseur.traitement;
+
+import ascenseur.traitement.etat.*;
+import ascenseur.utils.Constantes;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Ascenseur implements AscenseurAbstrait {
+
+    private Etat etat;
+    private int etage;
+    private LinkedList<RequeteExterne> requetesExternes;
+    private LinkedList<RequeteInterne> requetesInternes;
+    private boolean estBloque;
+
+    public Etat getEtat() {
+        return etat;
+    }
+
+    public int getEtage() {
+        return etage;
+    }
+
+    public boolean estBloque() {
+        return estBloque;
+    }
+
+    /**
+     * Renvoie la requete en cours de traitement
+     * @return requeteCourante
+     */
+    public Requete obtenirRequeteATraiter() {
+        Requete requeteEtage = obtenirRequetePourEtage(this.etage);
+        if (requeteEtage != null) {
+            return requeteEtage;
+        }
+        else {
+            return (requetesInternes.peekFirst() != null ? requetesInternes.peekFirst() : requetesExternes.peekFirst());
+        }
+    }
+
+    public int getNombreRequetes() {
+        return requetesExternes.size() + requetesInternes.size();
+    }
+
+    @Override
+    public List<RequeteInterne> getRequetesInternes() {
+        return requetesInternes;
+    }
+
+    @Override
+    public List<RequeteExterne> getRequetesExternes() {
+        return requetesExternes;
+    }
+
+    /**
+     * Si une requete existe à cet étage, la renvoie, sinon renvoie null
+     * @param etage l'étage voulu
+     * @return requete
+     */
+    private Requete obtenirRequetePourEtage(int etage) {
+        for (Requete req : requetesInternes) {
+            if (req.getEtage() == this.etage)
+                return req;
+        }
+        for (RequeteExterne req : requetesExternes) {
+            if (req.getEtage() == this.etage
+                    && (! req.getDirection() && etat.getValeur() == Constantes.ValeursEtat.MOUVEMENT_BAS)
+                    || req.getDirection() && etat.getValeur() == Constantes.ValeursEtat.MOUVEMENT_HAUT)
+                return req;
+        }
+        return null;
+    }
+
+    /**
+     * @param valEtat L'etat de départ de l'ascenseur (ex: Constantes.ValeursEtat.IMMOBILE_FERME)
+     * @param etage L'etage de départ de l'ascenseur
+     */
+    public Ascenseur(Constantes.ValeursEtat valEtat, int etage) {
+        this.etage = etage;
+        estBloque = false;
+        requetesInternes = new LinkedList<>();
+        requetesExternes = new LinkedList<>();
+
+        switch (valEtat) {
+            case IMMOBILE_OUVERT:
+                etat = new ImmobileOuvert();
+                break;
+            case MOUVEMENT_BAS:
+                etat = new MouvementBas();
+                break;
+            case MOUVEMENT_HAUT:
+                etat = new MouvementHaut();
+                break;
+            default:
+                etat = new ImmobileFerme();
+        }
+    }
+
+    public void bloquer() {
+        estBloque = true;
+    }
+
+    public void debloquer() {
+        estBloque = false;
+    }
+
+    public void monter() {
+        ++etage;
+    }
+
+    public void descendre() {
+        --etage;
+    }
+
+    public void ajouterRequete(RequeteExterne requete) {
+        requetesExternes.add(requete);
+    }
+
+    /**
+     * Parcourt les requetes enregistrées et supprime les requetes correspondant a l'etage courant
+     */
+    public void validerRequetesEtage() {
+        Iterator<RequeteInterne> iterInterne = requetesInternes.iterator();
+        while (iterInterne.hasNext()) {
+            if (iterInterne .next().getEtage() == etage)
+                iterInterne .remove();
+        }
+
+        Iterator<RequeteExterne> iterExterne = requetesExternes.iterator();
+        while (iterExterne.hasNext()) {
+            if (iterExterne.next().getEtage() == etage)
+                iterExterne.remove();
+        }
+    }
+
+    public void creerRequeteInterne(int etage) {
+        requetesInternes.add(new RequeteInterne(etage));
+    }
+
+    /**
+     * Un appel à la methode action correspond à l'execution d'un tour du programme
+     */
+    public void action() {
+        if (estBloque) return;
+
+        etat = etat.calculerNouvelEtat(obtenirRequeteATraiter(), etage);
+        etat.effectuerAction(this);
+
+            /* DEBUG */
+        System.out.println(this);
+    }
+
+    @Override
+    public String toString() {
+        return  "etat:" + etat +
+                ", etage:" + etage +
+                ", requete:" + (obtenirRequeteATraiter() != null ? obtenirRequeteATraiter().getEtage() : "aucune") +
+                ", estBloque:" + estBloque;
+    }
+
+    public String getOptions() {
+        return "";
+    }
+}

@@ -1,0 +1,66 @@
+package ascenseur.affichage;
+
+import ascenseur.traitement.Ascenseur;
+import ascenseur.traitement.Controleur;
+import ascenseur.traitement.ControleurAbstrait;
+import ascenseur.traitement.Requete;
+import ascenseur.utils.Constantes;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class VueInteractive implements Observateur {
+
+	private int nbEtagesImmeuble;
+	private int nbAscenseurs;
+
+	public VueInteractive(int nbEtagesImmeuble, int nbAscenseurs) {
+		this.nbEtagesImmeuble = nbEtagesImmeuble;
+		this.nbAscenseurs = nbAscenseurs;
+	}
+
+	@Override
+	public void actualiser(ControleurAbstrait controleurAbstrait) {
+		Scanner s = new Scanner(System.in); // Lecture de valeurs
+
+        while (true) {
+			System.out.print("Entrer une requete (type, etage, num):");
+
+            String ligne = s.nextLine();
+			if (ligne.isEmpty()) break;
+
+			String[] tokens = ligne.split(" ");
+			char type = Character.toUpperCase(tokens[0].charAt(0));
+
+			try {
+				int etage = Integer.parseInt(tokens[1]);
+
+				if (type == 'E') {
+					char tokenDirection = Character.toUpperCase(tokens[2].charAt(0));
+					boolean direction = (tokenDirection == 'U' || tokenDirection == 'H');
+					System.out.println("Requete externe : etage=" + etage + ", direction=" + direction);
+
+					controleurAbstrait.creerRequeteExterne(etage, direction);
+				} else if (type == 'I') {
+					int numAscenseur = Integer.parseInt(tokens[2]);
+					System.out.println("Requete interne : etage=" + etage + ", num=" + numAscenseur);
+
+					controleurAbstrait.getListeAscenseurs().get(numAscenseur).creerRequeteInterne(etage);
+				} else {
+					System.err.println("Erreur de syntaxe : type de requete");
+				}
+			} catch (NumberFormatException ex) {
+				System.err.println("Erreur de syntaxe : conversion en entier");
+			} catch (IndexOutOfBoundsException ex) {
+				System.err.println("Numero d'ascenseur trop grand");
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		Controleur controleur = Controleur.getInstance();
+		controleur.ajouterAscenseur(new Ascenseur(Constantes.ValeursEtat.IMMOBILE_FERME, 2));
+		VueInteractive vue = new VueInteractive(3, 2);
+		vue.actualiser(controleur);
+	}
+}

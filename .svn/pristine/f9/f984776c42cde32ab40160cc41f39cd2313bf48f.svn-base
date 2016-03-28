@@ -1,0 +1,24 @@
+package ascenseur.traitement;
+
+/**
+ * Created by s14005356 on 13/01/16.
+ */
+public class MusiqueAscenseur extends Option {
+
+    @Override
+    public void action() {
+        delegue.action();
+        System.out.println("De la musique : \"Poeme sur la 7eme par Johny\" ");
+    }
+
+    @Override
+    public String getOptions() {
+        return delegue.getOptions() + " musique " ;
+    }
+
+    public MusiqueAscenseur(AscenseurAbstrait ascenseurAbstrait) {
+        delegue = ascenseurAbstrait ;
+    }
+
+
+}

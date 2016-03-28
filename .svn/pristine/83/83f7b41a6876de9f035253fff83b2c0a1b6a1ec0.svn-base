@@ -1,0 +1,16 @@
+package ascenseur.traitement;
+
+import ascenseur.traitement.etat.Etat;
+
+public class AscenseurRapide extends Option {
+
+    @Override
+    public void action() {
+        delegue.action() ;
+        System.out.println("Tres rapide");
+    }
+
+    public AscenseurRapide(AscenseurAbstrait ascenseurAbstrait) {
+        delegue = ascenseurAbstrait ;
+    }
+}

@@ -1,0 +1,16 @@
+package ascenseur.traitement;
+
+import ascenseur.traitement.etat.Etat;
+
+public interface AscenseurAbstrait {
+
+    void action() ;
+    void ajouterRequete(RequeteExterne requete);
+    void creerRequeteInterne(int etage);
+    int getNombreRequetes();
+    Requete obtenirRequeteATraiter();
+    Etat getEtat();
+    int getEtage();
+    boolean estBloque();
+    String getOptions() ;
+}

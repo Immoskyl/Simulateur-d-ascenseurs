@@ -1,0 +1,29 @@
+package ascenseur.test;
+
+import ascenseur.affichage.VueCoupeImmeuble;
+import ascenseur.traitement.Ascenseur;
+import ascenseur.traitement.AscenseurAbstrait;
+import ascenseur.traitement.etat.ImmobileFerme;
+import ascenseur.traitement.etat.MouvementBas;
+
+import java.util.ArrayList;
+
+public class VueCoupeImmeubleTest {
+
+    // Test affichage immeuble ascii
+    public void test1 () {
+        ArrayList<AscenseurAbstrait> listeAscenseurs = new ArrayList<>() ;
+        Ascenseur a1 = new Ascenseur(new ImmobileFerme(), 4) ;
+        Ascenseur a2 = new Ascenseur(new MouvementBas(), 6) ;
+        listeAscenseurs.add(a1) ;
+        listeAscenseurs.add(a2) ;
+        VueCoupeImmeuble vueTest = new VueCoupeImmeuble(listeAscenseurs, 10) ;
+        vueTest.afficher();
+    }
+
+    public static void main(String[] arg0) {
+        VueCoupeImmeubleTest testor = new VueCoupeImmeubleTest () ;
+        testor.test1() ;
+    }
+
+}

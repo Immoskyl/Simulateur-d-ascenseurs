@@ -1,0 +1,24 @@
+package ascenseur.traitement.strategie;
+
+import ascenseur.traitement.AscenseurAbstrait;
+import ascenseur.traitement.RequeteExterne;
+
+import java.util.ArrayList;
+
+/**
+ * Created by r14006780 on 15/01/16.
+ */
+public class ChoixAleatoire implements SelectionAscenceur {
+
+    ArrayList<AscenseurAbstrait> listeAscenseurs = null;
+
+    public void setListeAscenseurs(ArrayList<AscenseurAbstrait> listeAscenseurs) {
+        this.listeAscenseurs = listeAscenseurs;
+    }
+
+    public void choisirAscenseur (RequeteExterne requete) {
+        //the random way
+        int i = (int) (Math.random() * listeAscenseurs.size());
+        listeAscenseurs.get(i).ajouterRequete(requete);
+    }
+}

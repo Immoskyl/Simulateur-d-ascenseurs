@@ -1,0 +1,94 @@
+package ascenseur.traitement;
+
+import java.util.ArrayList;
+
+public class Controleur implements ControleurAbstrait {
+    private ArrayList<RequeteExterne> listerequetesExternes;
+    private ArrayList<AscenseurAbstrait> listeAscenseurs;
+
+    //              -----SINGLETON-----
+
+    // L'utilisation du mot clé volatile, en Java version 5 et supérieur,
+    // permet d'éviter le cas où "Controleur.instance" est non-nul,
+    // mais pas encore "réellement" instancié.
+    private static volatile Controleur instance = null;
+
+    /**
+     * Constructeur de l'objet.
+     */
+    private Controleur() {
+        // La présence d'un constructeur privé supprime le constructeur public par défaut.
+        // De plus, seul le Controleur peut s'instancier lui-même.
+        this.listeAscenseurs = new ArrayList<>();
+        this.listerequetesExternes = new ArrayList<>();
+    } //Controleur()
+
+    /**
+     * Méthode permettant de renvoyer une instance de la classe Controleur
+     * @return Retourne l'instance du Controleur.
+     */
+    public static Controleur getInstance() {
+        //Le "Controleur doublement vérifié" permet
+        //d'éviter un appel coûteux à synchronized,
+        //une fois que l'instanciation est faite.
+        if (Controleur.instance == null) {
+            // Le mot-clé synchronized sur ce bloc empêche toute instanciation
+            // multiple même par différents "threads".
+            // Il est TRES important.
+            synchronized(Controleur.class) {
+                if (Controleur.instance == null) {
+                    Controleur.instance = new Controleur();
+                }
+            }
+        }
+        return Controleur.instance;
+    }//Controleur()
+
+    //              -----SINGLETON-----
+
+
+    public ArrayList<AscenseurAbstrait> getListeAscenseurs() {
+        return listeAscenseurs;
+    }
+
+    public void creerRequeteExterne (int etage, boolean direction) {
+        RequeteExterne requete = new RequeteExterne(etage, direction);
+        listerequetesExternes.add(requete);
+    }
+
+    @Override
+    public void ajouterAscenseur(AscenseurAbstrait ascenseur) {
+        listeAscenseurs.add(ascenseur);
+    }
+
+    public void choisirAscenseur (RequeteExterne requete) {
+        //the random way
+        int i = (int) (Math.random() * listeAscenseurs.size());
+        listeAscenseurs.get(i).ajouterRequete(requete);
+    }
+
+    public void actionAscenseurs() {
+        for (AscenseurAbstrait ascenseur : listeAscenseurs) {
+            ascenseur.action();
+        }
+    }
+
+    private void test (RequeteExterne requete) {
+        int[] velocite;
+        for (AscenseurAbstrait ascenseur: listeAscenseurs) {
+            if (! ascenseur.estBloque()) {
+                int i = 0;
+            }
+        }
+    }
+
+    public void affecterRequetes () {
+        for (RequeteExterne requete: listerequetesExternes) {
+            choisirAscenseur(requete);
+        }
+    }
+
+    public static Controleur TEST_creerInstance() {
+        return new Controleur();
+    }
+}

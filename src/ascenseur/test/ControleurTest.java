@@ -1,0 +1,42 @@
+package ascenseur.test;
+
+import ascenseur.traitement.*;
+import ascenseur.traitement.etat.*;
+import ascenseur.utils.Constantes;
+import junit.framework.TestCase;
+
+/**
+ * Created by r14003530 on 14/01/16.
+ */
+public class ControleurTest extends TestCase {
+
+    public ControleurTest(String name) {
+        super(name);
+    }
+
+    public void testUneRequeteExterne() throws Exception {
+        System.out.println(" -- une requete");
+        Controleur controleur = Controleur.TEST_creerInstance();
+        controleur.ajouterAscenseur(new MusiqueAscenseur(new Ascenseur(Constantes.ValeursEtat.IMMOBILE_OUVERT, 3)));
+        controleur.creerRequeteExterne(5, true);
+        controleur.affecterRequetes();
+        controleur.actionAscenseurs();
+        controleur.actionAscenseurs();
+        controleur.actionAscenseurs();
+        assertEquals(Constantes.ValeursEtat.MOUVEMENT_HAUT, controleur.getListeAscenseurs().get(0).getEtat().getValeur());
+        assertEquals(5, controleur.getListeAscenseurs().get(0).getEtage());
+        controleur.actionAscenseurs();
+        assertEquals(Constantes.ValeursEtat.IMMOBILE_OUVERT, controleur.getListeAscenseurs().get(0).getEtat().getValeur());
+    }
+
+    public void testAffectationRequetes() throws Exception {
+        System.out.println(" -- affect requete");
+        Controleur controleur = Controleur.TEST_creerInstance();
+        controleur.ajouterAscenseur(new AscenseurRapide(new Ascenseur(Constantes.ValeursEtat.IMMOBILE_OUVERT, 5)));
+        controleur.creerRequeteExterne(7, true);
+
+        controleur.actionAscenseurs();
+        controleur.actionAscenseurs();
+        controleur.actionAscenseurs();
+    }
+}
