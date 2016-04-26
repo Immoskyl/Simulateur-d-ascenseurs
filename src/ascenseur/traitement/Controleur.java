@@ -78,7 +78,7 @@ public class Controleur extends ControleurAbstrait {
             }
         }
         return Controleur.instance;
-    }//Controleur()
+    }//getInstance()
 
     public static Controleur TEST_creerInstance() {
         return new Controleur();
